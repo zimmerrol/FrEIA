@@ -331,7 +331,7 @@ class ReversibleGraphNet(nn.Module):
 
         return result
 
-    def forward(self, x, c=None, rev=False, intermediate_outputs=False):
+    def forward(self, x, c=None, rev=False, intermediate_outputs=False, abort_after_module=None):
         '''Forward or backward computation of the whole net.'''
 
         if rev:
@@ -386,6 +386,9 @@ class ReversibleGraphNet(nn.Module):
             out_dict[self.node_list[o[0]].name] = results
             for i, r in zip(o[2], results):
                 self._buffers[F'tmp_var_{i}'] = r
+                
+            if abort_after_module == self.node_list[o[0]].name:
+                break
 
         if intermediate_outputs:
             return out_dict
